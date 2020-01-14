@@ -2,6 +2,7 @@ const electron = require('electron')
 const path = require('path')
 const BrowserWindow = electron.remote.BrowserWindow
 const axios = require('axios')
+const ipc = electron.ipcRenderer
 
 const notifyBtn = document.getElementById('notifyBtn')
 const price = document.querySelector('h1')
@@ -29,8 +30,12 @@ notifyBtn.addEventListener('click', (e) => {
       nodeIntegration: true
     }
   })
-  win.webContents.openDevTools()
   win.on('close', () => { win = null })
   win.loadURL(modalPath)
   win.show()
+})
+
+ipc.on('targetPriceVal', (e, args) => {
+  const targetPriceVal = Number(args)
+  targetPrice.innerHTML = `$${targetPriceVal.toLocaleString('en')}`
 })
